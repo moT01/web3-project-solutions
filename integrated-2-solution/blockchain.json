@@ -4,19 +4,20 @@
     "previousHash": null
   },
   {
-    "hash": "00d2f9ce9b38a7527101fae1d9eafefeeeddcc59a01cb29fba25f51970230bb5",
+    "hash": "00e1f76daee3a10b82501093b6dbd68fd9425739da2fe90ab2c9fb10a3d907ea",
     "previousHash": 0,
-    "nonce": 236,
+    "nonce": 475,
     "transactions": [],
     "smartContracts": [
       {
-        "address": "0490c28cb4ef912661fb4462c79d56283771a8ad3e82bed4b9823a7cdd494e13b68a066e788cea52e8918104652d839ef3",
+        "address": "04f7b7508207e6730e888f5712757d30f75701251b1fc141a57d9a88c801a08de9fa2a99a5749e28780ba0145f5c83075a",
         "creatorAddress": "047f18310ca11477a0ccd328df42d7ff9cd068ac6816d9c76535b0fe1b7b45ab7312ff6167964c050e66c6db00642c5492",
         "functions": {
           "get-description.js": "const contractState = JSON.parse(process.env.CONTRACT_STATE);\n\nconsole.log(`Here's the description of the fundraising contract: ${contractState.description}`);\n",
-          "on-new-block.js": "const { addTransaction, updateContractState } = require('./blockchain-helpers');\n\nconst contractState = JSON.parse(process.env.CONTRACT_STATE);\nconst contractAddress = process.env.CONTRACT_ADDRESS;\nconst privateKey = process.env.PRIVATE_KEY;\nconst creatorAddress = process.env.CREATOR_ADDRESS;\nconst blockchainLength = process.env.BLOCKCHAIN_LENGTH;\n// Add your code below\n\nif (blockchainLength >= 7) {\n  // add a tx back to all donors\n  contractState.donations.forEach(donation => {\n    addTransaction(privateKey, donation.fromAddress, donation.amount);\n    contractState.balance -= donation.amount;\n  });\n\n  contractState.status = 'closed';\n\n  updateContractState(contractAddress, contractState);\n} \n",
-          "on-transaction.js": "const { addTransaction, updateContractState } = require('./blockchain-helpers');\n\nconst contractState = JSON.parse(process.env.CONTRACT_STATE);\nconst contractAddress = process.env.CONTRACT_ADDRESS;\nconst privateKey = process.env.PRIVATE_KEY;\nconst creatorAddress = process.env.CREATOR_ADDRESS;\nconst transaction = JSON.parse(process.env.TRANSACTION);\n// Add your code below\n\nconst { fromAddress, amount } = transaction;\n\nconst newDonation = {\n  fromAddress,\n  amount\n};\n\ncontractState.donations.push(newDonation);\ncontractState.balance += amount;\ncontractState.funds.raised += amount;\n\n// if contract fulfilled\nif (contractState.funds.raised >= contractState.funds.goal) {\n  console.log(`Contract fulfilled, you raised ${contractState.funds.raised} tokens on your goal of ${contractState.funds.goal} tokens`);\n\n  // send tx with all funds to me\n  // set status and other state variables\n  addTransaction(privateKey, creatorAddress, contractState.balance);\n  contractState.balance = 0;\n  contractState.status = \"closed\";\n} else {\n  console.log(`You have raised ${contractState.funds.raised} tokens on your goal of ${contractState.funds.goal} tokens`)\n}\n\n// update contract state\nupdateContractState(contractAddress, contractState);\n",
-          "update-description.js": "const { updateContractState } = require('./blockchain-helpers');\n\nconst contractState = JSON.parse(process.env.CONTRACT_STATE);\nconst contractAddress = process.env.CONTRACT_ADDRESS;\nconst args = JSON.parse(process.env.ARGS);\n\ncontractState.description = args[0];\n\nconsole.log(`Updating the 'description' property in the 'fundraising-contract' to ${args[0]}, see it in 'smart-contracts.json'`);\nupdateContractState(contractAddress, contractState);\n"
+          "on-new-block.js": "const { addTransaction, updateContractState } = (await import('./blockchain-helpers.js'));\n\nconst contractState = JSON.parse(process.env.CONTRACT_STATE);\nconst contractAddress = process.env.CONTRACT_ADDRESS;\nconst privateKey = process.env.PRIVATE_KEY;\nconst creatorAddress = process.env.CREATOR_ADDRESS;\nconst blockchainLength = process.env.BLOCKCHAIN_LENGTH;\n// Add your code below\n\nif (blockchainLength >= 7) {\n  // add a tx back to all donors\n  contractState.donations.forEach(donation => {\n    addTransaction(privateKey, donation.fromAddress, donation.amount);\n    contractState.balance -= donation.amount;\n  });\n\n  contractState.status = 'closed';\n\n  updateContractState(contractAddress, contractState);\n} \n",
+          "on-transaction.js": "const { addTransaction, updateContractState } = (await import('./blockchain-helpers.js'));\n\nconst contractState = JSON.parse(process.env.CONTRACT_STATE);\nconst contractAddress = process.env.CONTRACT_ADDRESS;\nconst privateKey = process.env.PRIVATE_KEY;\nconst creatorAddress = process.env.CREATOR_ADDRESS;\nconst transaction = JSON.parse(process.env.TRANSACTION);\n// Add your code below\n\nconst { fromAddress, amount } = transaction;\n\nconst newDonation = {\n  fromAddress,\n  amount\n};\n\ncontractState.donations.push(newDonation);\ncontractState.balance += amount;\ncontractState.funds.raised += amount;\n\n// if contract fulfilled\nif (contractState.funds.raised >= contractState.funds.goal) {\n  console.log(`Contract fulfilled, you raised ${contractState.funds.raised} tokens on your goal of ${contractState.funds.goal} tokens`);\n\n  // send tx with all funds to me\n  // set status and other state variables\n  addTransaction(privateKey, creatorAddress, contractState.balance);\n  contractState.balance = 0;\n  contractState.status = \"closed\";\n} else {\n  console.log(`You have raised ${contractState.funds.raised} tokens on your goal of ${contractState.funds.goal} tokens`)\n}\n\n// update contract state\nupdateContractState(contractAddress, contractState);\n",
+          "other.js": "const { addTransaction, updateContractState } = (await import('./blockchain-helpers.js'));\n\nconst contractState = JSON.parse(process.env.CONTRACT_STATE);\nconst contractAddress = process.env.CONTRACT_ADDRESS;\nconst privateKey = process.env.PRIVATE_KEY;\nconst creatorAddress = process.env.CREATOR_ADDRESS;\nconst blockchainLength = JSON.parse(process.env.TRANSACTION);\nconst args = JSON.parse(process.env.ARGS);\n",
+          "update-description.js": "const { updateContractState } = (await import('./blockchain-helpers.js'));\n\nconst contractState = JSON.parse(process.env.CONTRACT_STATE);\nconst contractAddress = process.env.CONTRACT_ADDRESS;\nconst args = JSON.parse(process.env.ARGS);\n\ncontractState.description = args[0];\n\nconsole.log(`Updating the 'description' property in the 'fundraising-contract' to ${args[0]}, see it in 'smart-contracts.json'`);\nupdateContractState(contractAddress, contractState);\n"
         },
         "state": {
           "status": "open",
@@ -32,22 +33,36 @@
     ]
   },
   {
-    "hash": "00ba5b09cee5a7ed725900484486b2e6fc8897fd7f10ffca95f571f865bd44b3",
-    "previousHash": "00d2f9ce9b38a7527101fae1d9eafefeeeddcc59a01cb29fba25f51970230bb5",
-    "nonce": 41,
+    "hash": "00f7fdac8af83c3a10b6ff0f53867831e601604c46f11eb4438457327a2cf1de",
+    "previousHash": "00e1f76daee3a10b82501093b6dbd68fd9425739da2fe90ab2c9fb10a3d907ea",
+    "nonce": 458,
     "transactions": [
       {
         "fromAddress": null,
-        "toAddress": "047f18310ca11477a0ccd328df42d7ff9cd068ac6816d9c76535b0fe1b7b45ab7312ff6167964c050e66c6db00642c5492",
+        "toAddress": "041608a1e5bc12c505bb60b52bf64ca40f816f14acc9e31bfa21c6c7ba435a215a8f54ba49ce767b950cfdfea2efe261a9",
         "amount": 50
       }
     ],
-    "smartContracts": []
+    "smartContracts": [
+      {
+        "address": "04f7b7508207e6730e888f5712757d30f75701251b1fc141a57d9a88c801a08de9fa2a99a5749e28780ba0145f5c83075a",
+        "state": {
+          "status": "open",
+          "description": "Smart contract to raise funds for my start up.",
+          "balance": 0,
+          "funds": {
+            "raised": 0,
+            "goal": 150
+          },
+          "donations": []
+        }
+      }
+    ]
   },
   {
-    "hash": "00a8884cfd81b4b0e2f9b081808734fc18aecd7f91f3e6655fc4657f684db463",
-    "previousHash": "00ba5b09cee5a7ed725900484486b2e6fc8897fd7f10ffca95f571f865bd44b3",
-    "nonce": 452,
+    "hash": "00c520197bfb1853426643b3a68308ddab069e495cf2716c63e582fd3e7e5a43",
+    "previousHash": "00f7fdac8af83c3a10b6ff0f53867831e601604c46f11eb4438457327a2cf1de",
+    "nonce": 1462,
     "transactions": [
       {
         "fromAddress": null,
@@ -55,19 +70,19 @@
         "amount": 50
       },
       {
-        "fromAddress": "047f18310ca11477a0ccd328df42d7ff9cd068ac6816d9c76535b0fe1b7b45ab7312ff6167964c050e66c6db00642c5492",
-        "toAddress": "0490c28cb4ef912661fb4462c79d56283771a8ad3e82bed4b9823a7cdd494e13b68a066e788cea52e8918104652d839ef3",
+        "fromAddress": "041608a1e5bc12c505bb60b52bf64ca40f816f14acc9e31bfa21c6c7ba435a215a8f54ba49ce767b950cfdfea2efe261a9",
+        "toAddress": "04f7b7508207e6730e888f5712757d30f75701251b1fc141a57d9a88c801a08de9fa2a99a5749e28780ba0145f5c83075a",
         "amount": 50,
-        "hash": "253f7c0e72867427374d40c4c4bc2ccd128e7db7081b6619f931d859e9eaf488",
-        "signature": "303402182b77f6ab456ef443dcdb6316450a4a26a1cb13cd53c14402021876bf483f726c71271093223255dec65fc38cf1c46bc9f6bd"
+        "hash": "6f2032ff29abf4f92cdf9b82b2eb11f3e2afa649a863cac6da789ff153f38919",
+        "signature": "303502187b4908e78e01ab2eccc3fccdf7d633cbec62f70c277c3648021900b896f6677d54a46d626560a044f91758dc23e11d2fc1aa93"
       }
     ],
     "smartContracts": [
       {
-        "address": "0490c28cb4ef912661fb4462c79d56283771a8ad3e82bed4b9823a7cdd494e13b68a066e788cea52e8918104652d839ef3",
+        "address": "04f7b7508207e6730e888f5712757d30f75701251b1fc141a57d9a88c801a08de9fa2a99a5749e28780ba0145f5c83075a",
         "state": {
           "status": "open",
-          "description": "Smart contract",
+          "description": "Smart contract to raise funds for my start up.",
           "balance": 50,
           "funds": {
             "raised": 50,
@@ -75,7 +90,7 @@
           },
           "donations": [
             {
-              "fromAddress": "047f18310ca11477a0ccd328df42d7ff9cd068ac6816d9c76535b0fe1b7b45ab7312ff6167964c050e66c6db00642c5492",
+              "fromAddress": "041608a1e5bc12c505bb60b52bf64ca40f816f14acc9e31bfa21c6c7ba435a215a8f54ba49ce767b950cfdfea2efe261a9",
               "amount": 50
             }
           ]
@@ -84,9 +99,22 @@
     ]
   },
   {
-    "hash": "00e12d13eb9034c3521c00bd86b8a638d53315b8214fdbc3a543735c676d7a2e",
-    "previousHash": "00a8884cfd81b4b0e2f9b081808734fc18aecd7f91f3e6655fc4657f684db463",
-    "nonce": 36,
+    "hash": "008141b503b4acbcf9fefb562742fcc7a6aa302e8ec296ca150567c1eda32a61",
+    "previousHash": "00c520197bfb1853426643b3a68308ddab069e495cf2716c63e582fd3e7e5a43",
+    "nonce": 315,
+    "transactions": [
+      {
+        "fromAddress": null,
+        "toAddress": "041608a1e5bc12c505bb60b52bf64ca40f816f14acc9e31bfa21c6c7ba435a215a8f54ba49ce767b950cfdfea2efe261a9",
+        "amount": 50
+      }
+    ],
+    "smartContracts": []
+  },
+  {
+    "hash": "00f6512ecad6aafbdb6f41f4d978643f404503ae45ae4cdad6748a88e24d1867",
+    "previousHash": "008141b503b4acbcf9fefb562742fcc7a6aa302e8ec296ca150567c1eda32a61",
+    "nonce": 594,
     "transactions": [
       {
         "fromAddress": null,
@@ -95,25 +123,18 @@
       },
       {
         "fromAddress": "0412bb6129d866a633aa62270e84be8630ebf803a64f6879a5ac08f12cde2aeca2eb272481fcc742d568aad80e44ba68c5",
-        "toAddress": "0490c28cb4ef912661fb4462c79d56283771a8ad3e82bed4b9823a7cdd494e13b68a066e788cea52e8918104652d839ef3",
+        "toAddress": "04f7b7508207e6730e888f5712757d30f75701251b1fc141a57d9a88c801a08de9fa2a99a5749e28780ba0145f5c83075a",
         "amount": 50,
-        "hash": "303b6a62f1da712bc2311db0902c26988bea52b8ae9a25604fe2945a99aa6f28",
-        "signature": "3036021900ba72c66d5406bc1b05b3357bda984da84955edf729d7a75d021900e13f3e79044e7132050b852d99d434f2caae68a125603870"
-      },
-      {
-        "fromAddress": "0412bb6129d866a633aa62270e84be8630ebf803a64f6879a5ac08f12cde2aeca2eb272481fcc742d568aad80e44ba68c5",
-        "toAddress": "0490c28cb4ef912661fb4462c79d56283771a8ad3e82bed4b9823a7cdd494e13b68a066e788cea52e8918104652d839ef3",
-        "amount": 20,
-        "hash": "da8b625da3784d0b677f2cecd376176e3be2dee14bce369d89010921e6acd0f2",
-        "signature": "30350218281460a2d580b9374dca9ca1c96c3d88d16d26a1d94934f10219008319d42a204b2034a2c30b051ffb6f6c07d78a810b8b3b32"
+        "hash": "d295d93eedba6c84cfdfdc92d7ea1db31383b0dcfdd2fb907adb03149d1239f1",
+        "signature": "3035021900a0cca7912292d1d43222c77f8c4d9675921fbbd78f97e323021803ef29066133697df2af7186e7c68d4fa1c1a5bf1efa8882"
       }
     ],
     "smartContracts": [
       {
-        "address": "0490c28cb4ef912661fb4462c79d56283771a8ad3e82bed4b9823a7cdd494e13b68a066e788cea52e8918104652d839ef3",
+        "address": "04f7b7508207e6730e888f5712757d30f75701251b1fc141a57d9a88c801a08de9fa2a99a5749e28780ba0145f5c83075a",
         "state": {
           "status": "open",
-          "description": "Smart contract",
+          "description": "Smart contract to raise funds for my start up.",
           "balance": 100,
           "funds": {
             "raised": 100,
@@ -121,64 +142,12 @@
           },
           "donations": [
             {
-              "fromAddress": "047f18310ca11477a0ccd328df42d7ff9cd068ac6816d9c76535b0fe1b7b45ab7312ff6167964c050e66c6db00642c5492",
+              "fromAddress": "041608a1e5bc12c505bb60b52bf64ca40f816f14acc9e31bfa21c6c7ba435a215a8f54ba49ce767b950cfdfea2efe261a9",
               "amount": 50
             },
             {
               "fromAddress": "0412bb6129d866a633aa62270e84be8630ebf803a64f6879a5ac08f12cde2aeca2eb272481fcc742d568aad80e44ba68c5",
               "amount": 50
-            }
-          ]
-        }
-      },
-      {
-        "address": "0490c28cb4ef912661fb4462c79d56283771a8ad3e82bed4b9823a7cdd494e13b68a066e788cea52e8918104652d839ef3",
-        "state": {
-          "status": "open",
-          "description": "Smart contract",
-          "balance": 120,
-          "funds": {
-            "raised": 120,
-            "goal": 150
-          },
-          "donations": [
-            {
-              "fromAddress": "047f18310ca11477a0ccd328df42d7ff9cd068ac6816d9c76535b0fe1b7b45ab7312ff6167964c050e66c6db00642c5492",
-              "amount": 50
-            },
-            {
-              "fromAddress": "0412bb6129d866a633aa62270e84be8630ebf803a64f6879a5ac08f12cde2aeca2eb272481fcc742d568aad80e44ba68c5",
-              "amount": 50
-            },
-            {
-              "fromAddress": "0412bb6129d866a633aa62270e84be8630ebf803a64f6879a5ac08f12cde2aeca2eb272481fcc742d568aad80e44ba68c5",
-              "amount": 20
-            }
-          ]
-        }
-      },
-      {
-        "address": "0490c28cb4ef912661fb4462c79d56283771a8ad3e82bed4b9823a7cdd494e13b68a066e788cea52e8918104652d839ef3",
-        "state": {
-          "status": "open",
-          "description": "Smart contract to raise funds for my start up.",
-          "balance": 120,
-          "funds": {
-            "raised": 120,
-            "goal": 150
-          },
-          "donations": [
-            {
-              "fromAddress": "047f18310ca11477a0ccd328df42d7ff9cd068ac6816d9c76535b0fe1b7b45ab7312ff6167964c050e66c6db00642c5492",
-              "amount": 50
-            },
-            {
-              "fromAddress": "0412bb6129d866a633aa62270e84be8630ebf803a64f6879a5ac08f12cde2aeca2eb272481fcc742d568aad80e44ba68c5",
-              "amount": 50
-            },
-            {
-              "fromAddress": "0412bb6129d866a633aa62270e84be8630ebf803a64f6879a5ac08f12cde2aeca2eb272481fcc742d568aad80e44ba68c5",
-              "amount": 20
             }
           ]
         }
@@ -186,33 +155,33 @@
     ]
   },
   {
-    "hash": "00c7e693f9c59412ad3e324ff946c2ba089c202e659af9f6d325ea9eeb17a565",
-    "previousHash": "00e12d13eb9034c3521c00bd86b8a638d53315b8214fdbc3a543735c676d7a2e",
-    "nonce": 195,
+    "hash": "009ae11a17ccf8e85284d80fffee4b4606abaf101ed3ecf98a0a7a5963416dcc",
+    "previousHash": "00f6512ecad6aafbdb6f41f4d978643f404503ae45ae4cdad6748a88e24d1867",
+    "nonce": 316,
     "transactions": [
       {
         "fromAddress": null,
-        "toAddress": "0412bb6129d866a633aa62270e84be8630ebf803a64f6879a5ac08f12cde2aeca2eb272481fcc742d568aad80e44ba68c5",
+        "toAddress": "047f18310ca11477a0ccd328df42d7ff9cd068ac6816d9c76535b0fe1b7b45ab7312ff6167964c050e66c6db00642c5492",
         "amount": 50
       },
       {
-        "fromAddress": "0412bb6129d866a633aa62270e84be8630ebf803a64f6879a5ac08f12cde2aeca2eb272481fcc742d568aad80e44ba68c5",
-        "toAddress": "0490c28cb4ef912661fb4462c79d56283771a8ad3e82bed4b9823a7cdd494e13b68a066e788cea52e8918104652d839ef3",
-        "amount": 30,
-        "hash": "57648620bf6d39fbf69175c34190ae4a8ec80c2f96cbad9fab096eaf80d9f7c4",
-        "signature": "303502187d7a9cb1dbb18323fc2d2bdc2947eaa90d1d376b4db52bf8021900c9d91605e70083d774cf0febc7c95b02ba18921166015cff"
+        "fromAddress": "041608a1e5bc12c505bb60b52bf64ca40f816f14acc9e31bfa21c6c7ba435a215a8f54ba49ce767b950cfdfea2efe261a9",
+        "toAddress": "04f7b7508207e6730e888f5712757d30f75701251b1fc141a57d9a88c801a08de9fa2a99a5749e28780ba0145f5c83075a",
+        "amount": 50,
+        "hash": "6f2032ff29abf4f92cdf9b82b2eb11f3e2afa649a863cac6da789ff153f38919",
+        "signature": "303502187b4908e78e01ab2eccc3fccdf7d633cbec62f70c277c3648021900b896f6677d54a46d626560a044f91758dc23e11d2fc1aa93"
       },
       {
-        "fromAddress": "0490c28cb4ef912661fb4462c79d56283771a8ad3e82bed4b9823a7cdd494e13b68a066e788cea52e8918104652d839ef3",
+        "fromAddress": "04f7b7508207e6730e888f5712757d30f75701251b1fc141a57d9a88c801a08de9fa2a99a5749e28780ba0145f5c83075a",
         "toAddress": "047f18310ca11477a0ccd328df42d7ff9cd068ac6816d9c76535b0fe1b7b45ab7312ff6167964c050e66c6db00642c5492",
         "amount": 150,
-        "hash": "ab28b3f964284cbd5939ae667aab9104f30e2d8379702a50fd3217f33e6a83c5",
-        "signature": "3036021900c8a5b48c3be87f8df782c55e4e22b3e848efe1764247f46a021900996d1408c29675c64b0bcabc752b6234a122c1ba6f78f430"
+        "hash": "68d5c521d6ec38439ac2ce0f7cbafac99d8b5693511f123823c70951c6d1ffce",
+        "signature": "303602190081c36e577708d55f7d1a676d44f42235525a39572b8d0653021900e20037dd650b6f0e87903c2a1947d054a8ee5ce3d855c118"
       }
     ],
     "smartContracts": [
       {
-        "address": "0490c28cb4ef912661fb4462c79d56283771a8ad3e82bed4b9823a7cdd494e13b68a066e788cea52e8918104652d839ef3",
+        "address": "04f7b7508207e6730e888f5712757d30f75701251b1fc141a57d9a88c801a08de9fa2a99a5749e28780ba0145f5c83075a",
         "state": {
           "status": "closed",
           "description": "Smart contract to raise funds for my start up.",
@@ -223,7 +192,7 @@
           },
           "donations": [
             {
-              "fromAddress": "047f18310ca11477a0ccd328df42d7ff9cd068ac6816d9c76535b0fe1b7b45ab7312ff6167964c050e66c6db00642c5492",
+              "fromAddress": "041608a1e5bc12c505bb60b52bf64ca40f816f14acc9e31bfa21c6c7ba435a215a8f54ba49ce767b950cfdfea2efe261a9",
               "amount": 50
             },
             {
@@ -231,12 +200,8 @@
               "amount": 50
             },
             {
-              "fromAddress": "0412bb6129d866a633aa62270e84be8630ebf803a64f6879a5ac08f12cde2aeca2eb272481fcc742d568aad80e44ba68c5",
-              "amount": 20
-            },
-            {
-              "fromAddress": "0412bb6129d866a633aa62270e84be8630ebf803a64f6879a5ac08f12cde2aeca2eb272481fcc742d568aad80e44ba68c5",
-              "amount": 30
+              "fromAddress": "041608a1e5bc12c505bb60b52bf64ca40f816f14acc9e31bfa21c6c7ba435a215a8f54ba49ce767b950cfdfea2efe261a9",
+              "amount": 50
             }
           ]
         }

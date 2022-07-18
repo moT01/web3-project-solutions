@@ -1,4 +1,4 @@
-const { addTransaction, updateContractState } = (await import('./blockchain-helpers.js.js'));
+const { addTransaction, updateContractState } = require('./blockchain-helpers');
 
 const contractState = JSON.parse(process.env.CONTRACT_STATE);
 const contractAddress = process.env.CONTRACT_ADDRESS;
