@@ -1,4 +1,4 @@
-const { writeBlockchain, writeTransactions } = require('./blockchain-helpers');
+import { writeBlockchain, writeTransactions } from './blockchain-helpers.js';
 // Add your code below
 
 const genesisBlock = {

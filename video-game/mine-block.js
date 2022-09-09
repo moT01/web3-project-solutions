@@ -1,6 +1,11 @@
-const { getBlockchain, getTransactions, writeBlockchain, writeTransactions } = require('./blockchain-helpers');
+import {
+  getBlockchain,
+  getTransactions,
+  writeBlockchain,
+  writeTransactions
+} from './blockchain-helpers.js';
 
-const sha256 = require('crypto-js/sha256');
+import sha256 from 'crypto-js/sha256.js';
 // Add your code below
 
 const blockchain = getBlockchain();

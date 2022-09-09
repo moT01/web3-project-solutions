@@ -1,7 +1,12 @@
-const { getAddressBalance, getTransactions, getItemPrice, writeTransactions } = require('./blockchain-helpers');
+import {
+  getAddressBalance,
+  getTransactions,
+  getItemPrice,
+  writeTransactions
+} from './blockchain-helpers.js';
 
-const EC = require('elliptic').ec;
-const ec = new EC('p192');
+import EC from 'elliptic';
+const ec = new EC.ec('p192');
 
 const buyerPrivateKey = process.argv[2];
 const itemBought = process.argv[3];
